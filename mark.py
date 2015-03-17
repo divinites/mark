@@ -1,9 +1,15 @@
 from libmark import *
 statements = "./statement.csv"
 marks = "./mark.csv"
-weights = [10,20,30,4,5,6,7,8,9,10,11,12,13,14]
+comment = "./comment.csv"
+weights = [1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+comment_weight = [10,10,10,10,10,10]
 mark_matrix = order_file(marks)
 mark_matrix.pop(0)
-for individual_mark in mark_matrix:
-    grade(individual_mark, weights)
-    doc_process(individual_mark, statements,weights)
+comments = order_file(comment)
+comment_statement = comments.pop(0)
+comment_statement.pop(0)
+comment_statement.pop()
+for individual_mark, individual_comment in zip(mark_matrix, comments):
+    individual_comment.pop(0)
+    doc_process(individual_mark, comment_statement, individual_comment, comment_weight, statements, weights)

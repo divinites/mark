@@ -4,6 +4,7 @@ from docx.shared import Pt
 from docx.shared import Emu
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
+# Simply dealing with CSV
 def DetectDelimiter(csvFile):
     with open(csvFile, 'r') as myCsvfile:
         header = myCsvfile.readline()
@@ -25,6 +26,7 @@ def order_file(target_file):
         target_matrix.append(i)
     return target_matrix
 
+# Draw Tickers
 def signs(x):
     try:
         y = int(x)
@@ -43,6 +45,7 @@ def signs(x):
     except:
         return x
 
+""" Calculate the grade """
 def grade(marks, weights):
     numbers = []
     for mark in marks:
@@ -53,13 +56,16 @@ def grade(marks, weights):
 
     grades =[]
     for i,j in zip(numbers, weights):
-        grades.append(i*j/sum(weights))
+        grades.append(i*j)
     return int(round(sum(grades),0))
 
+"""" Main function, process individual document"""
 
-def doc_process(marks, criteria, weights):
-
+def doc_process(marks, comment_statement, individual_comment, comment_weight, criteria, weights):
+    additional_comment = individual_comment.pop()
     stat_matrix = order_file(criteria)
+    individual_comment = [int(i) for i in individual_comment]
+
     pos_stats, neg_stats = zip(*stat_matrix)
     document = Document()
     heads = document.add_paragraph().add_run('Economics of Corporate Strategy - ASSIGNMENT FEEDBACK FORM 2014/15')
@@ -135,15 +141,20 @@ def doc_process(marks, criteria, weights):
     title_cells = comments.columns[0].cells
     comments_cells = comments.columns[1].cells
     title_cells[0].paragraphs[0].add_run('Good Points:')
-    comments_cells[0].add_paragraph('second item', style='List Bullet')
-    title_cells[1].paragraphs[0].add_run('Missing Points:')
-    comments_cells[1].add_paragraph('second item', style='List Bullet')
-    title_cells[2].paragraphs[0].add_run('Bonus Points:')
-    comments_cells[2].add_paragraph('second item', style='List Bullet')
+    title_cells[1].paragraphs[0].add_run('Potential Improvements:')
     title_cells[3].paragraphs[0].add_run('Additional Comments:')
-    comments_cells[3].add_paragraph('second item', style='List Bullet')
 
-    final_grade = grade(marks, weights)
+    for idx, i in enumerate(individual_comment):
+        if i == 1:
+            comments_cells[0].add_paragraph(comment_statement[idx], style='List Bullet')
+        if i == 0:
+            comments_cells[1].add_paragraph(comment_statement[idx], style='List Bullet')
+        if i == 2:
+            comments_cells[0].add_paragraph(comment_statement[idx]+'(Bonus Point)', style='List Bullet')
+
+    comments_cells[3].add_paragraph(additional_comment, style='List Bullet')
+
+    final_grade = grade(marks, weights)+ grade(individual_comment, comment_weight)
     info_cells[3].paragraphs[0].add_run(str(final_grade))
 
     document.save(std_no+'.docx')
