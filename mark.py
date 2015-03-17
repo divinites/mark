@@ -1,4 +1,7 @@
 from libmark import *
+import os
+os.system('rm -rf *.docx')
+
 statements = "./statement.csv"
 marks = "./mark.csv"
 comment = "./comment.csv"
