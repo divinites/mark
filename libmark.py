@@ -3,6 +3,7 @@ import csv
 from docx.shared import Pt
 from docx.shared import Emu
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+
 def DetectDelimiter(csvFile):
     with open(csvFile, 'r') as myCsvfile:
         header = myCsvfile.readline()
@@ -27,25 +28,38 @@ def order_file(target_file):
 def signs(x):
     try:
         y = int(x)
-        if y == 1:
+        if y == 5:
             return u" ☑ ☐ ☐ ☐ ☐ "
-        elif y == 2:
+        elif y == 4:
             return u" ☐ ☑ ☐ ☐ ☐ "
         elif y == 3:
             return u" ☐ ☐ ☑ ☐ ☐ "
-        elif y == 4:
+        elif y == 2:
             return u" ☐ ☐ ☐ ☑ ☐ "
-        elif y == 5:
+        elif y == 1:
             return u" ☐ ☐ ☐ ☐ ☑ "
         else:
             return y
     except:
         return x
 
-def doc_process(MARKS):
+def grade(marks, weights):
+    numbers = []
+    for mark in marks:
+        try:
+            numbers.append(int(mark))
+        except:
+            pass
 
-    statements = "./statement.csv"
-    stat_matrix = order_file(statements)
+    grades =[]
+    for i,j in zip(numbers, weights):
+        grades.append(i*j/sum(weights))
+    return int(round(sum(grades),0))
+
+
+def doc_process(marks, criteria, weights):
+
+    stat_matrix = order_file(criteria)
     pos_stats, neg_stats = zip(*stat_matrix)
     document = Document()
     heads = document.add_paragraph().add_run('Economics of Corporate Strategy - ASSIGNMENT FEEDBACK FORM 2014/15')
@@ -60,13 +74,15 @@ def doc_process(MARKS):
     intro_c.append(intro.add_run(' The scale below qualitatively presents an overview of the strengths and weaknesses of your work.'))
     intro_c.append(intro.add_run(' Items are only ticked where applicable.'))
     intro_c.append(intro.add_run(' Your tutor may provide additional comments overleaf.'))
-    std_no = MARKS.pop(0)
+    std_no = marks.pop(0)
 
     for i in intro_c:
         i.font.name = 'Arial'
         i.font.size = Pt(10)
     intro_c[2].bold = True
     intro.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+
+
     info = document.add_table(1, 4)
     info_cells = info.rows[0].cells
     S0 = info_cells[0].paragraphs[0].add_run('Examination Number:')
@@ -75,7 +91,7 @@ def doc_process(MARKS):
     info_cells[1].width = Emu(3400000)
     S2 = info_cells[2].paragraphs[0].add_run('Mark:')
     info_cells[2].width = Emu(360000)
-    S3 = info_cells[3].paragraphs[0].add_run('100')
+    S3 = info_cells[3].paragraphs[0].add_run('')
     info_cells[3].width = Emu(360000)
     S0.bold = True
     S1.bold = True
@@ -100,11 +116,11 @@ def doc_process(MARKS):
         tem.font.name = 'Arial'
         tem.bold = False
 
-    for idx, mark in enumerate(MARKS):
+    for idx, mark in enumerate(marks):
 
         ptem = mark_cells[idx].paragraphs[0]
         ptem.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        tem = ptem.add_run(signs(MARKS[idx]))
+        tem = ptem.add_run(signs(marks[idx]))
         tem.font.size = Pt(14)
         tem.font.name = 'Arial'
         tem.bold = False
@@ -126,4 +142,8 @@ def doc_process(MARKS):
     comments_cells[2].add_paragraph('second item', style='List Bullet')
     title_cells[3].paragraphs[0].add_run('Additional Comments:')
     comments_cells[3].add_paragraph('second item', style='List Bullet')
+
+    final_grade = grade(marks, weights)
+    info_cells[3].paragraphs[0].add_run(str(final_grade))
+
     document.save(std_no+'.docx')
