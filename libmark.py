@@ -63,16 +63,18 @@ def grade(marks, weights):
 
 def doc_process(marks, comment_statement, individual_comment, comment_weight, criteria, weights):
     additional_comment = individual_comment.pop()
+
     stat_matrix = order_file(criteria)
     individual_comment = [int(i) for i in individual_comment]
 
     pos_stats, neg_stats = zip(*stat_matrix)
     document = Document()
-    heads = document.add_paragraph().add_run('Economics of Corporate Strategy - ASSIGNMENT FEEDBACK FORM 2014/15')
-    heads.bold = True
+    heads = document.add_paragraph()
+    cheads = heads.add_run('Economics of Strategy - ASSIGNMENT FEEDBACK FORM 2014/15')
+    cheads.bold = True
     heads.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    heads.font.name = 'Arial'
-    heads.font.size = Pt(11)
+    cheads.font.name = 'Arial'
+    cheads.font.size = Pt(14)
 
     intro = document.add_paragraph()
     intro_c = []
@@ -84,21 +86,27 @@ def doc_process(marks, comment_statement, individual_comment, comment_weight, cr
 
     for i in intro_c:
         i.font.name = 'Arial'
-        i.font.size = Pt(10)
+        i.font.size = Pt(14)
     intro_c[2].bold = True
     intro.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-
+    document.add_paragraph()
 
     info = document.add_table(1, 4)
     info_cells = info.rows[0].cells
     S0 = info_cells[0].paragraphs[0].add_run('Examination Number:')
-    info_cells[0].width = Emu(2000000)
+    info_cells[0].width = Emu(2500000)
+    S0.font.size = Pt(14)
+
     S1 = info_cells[1].paragraphs[0].add_run(std_no)
     info_cells[1].width = Emu(3400000)
+    S1.font.size = Pt(14)
+    S1.font.underline = True
     S2 = info_cells[2].paragraphs[0].add_run('Mark:')
+    S2.font.size = Pt(14)
     info_cells[2].width = Emu(360000)
     S3 = info_cells[3].paragraphs[0].add_run('')
     info_cells[3].width = Emu(360000)
+    S3.font.size = Pt(14)
     S0.bold = True
     S1.bold = True
     S2.bold = True
@@ -135,26 +143,42 @@ def doc_process(marks, comment_statement, individual_comment, comment_weight, cr
     document.add_page_break()
     comment_section = document.add_paragraph().add_run('Comments:')
     comment_section.bold = True
-    comment_section.font.size = Pt(12)
+    comment_section.font.size = Pt(14)
     comments = document.add_table(4, 2)
     comments.style = 'Light Shading'
     title_cells = comments.columns[0].cells
     comments_cells = comments.columns[1].cells
-    title_cells[0].paragraphs[0].add_run('Good Points:')
-    title_cells[1].paragraphs[0].add_run('Potential Improvements:')
-    title_cells[3].paragraphs[0].add_run('Additional Comments:')
+    title_size = title_cells[0].paragraphs[0].add_run('Good Points:')
+    title_size.font.size = Pt(14)
+    title_size = title_cells[1].paragraphs[0].add_run('Potential Improvements:')
+    title_size.font.size = Pt(14)
+    title_size = title_cells[3].paragraphs[0].add_run('Additional Comments:')
+    title_size.font.size = Pt(14)
 
     for idx, i in enumerate(individual_comment):
         if i == 1:
-            comments_cells[0].add_paragraph(comment_statement[idx], style='List Bullet')
+            ps_comment = comments_cells[0].add_paragraph(style='List Bullet').add_run(comment_statement[idx])
+            ps_comment.bold = False
+            ps_comment.font.size =Pt(14)
         if i == 0:
-            comments_cells[1].add_paragraph(comment_statement[idx], style='List Bullet')
+            ng_comment = comments_cells[1].add_paragraph(style='List Bullet').add_run(comment_statement[idx])
+            ng_comment.bold = False
+            ng_comment.font.size = Pt(14)
         if i == 2:
-            comments_cells[0].add_paragraph(comment_statement[idx]+'(Bonus Point)', style='List Bullet')
+            bs_comment = comments_cells[0].add_paragraph(style='List Bullet').add_run(comment_statement[idx]+' (Bonus Point)')
+            bs_comment.bold = False
+            bs_comment.font.size = Pt(14)
+        else:
+            pass
 
-    comments_cells[3].add_paragraph(additional_comment, style='List Bullet')
+    ad_comment = comments_cells[3].add_paragraph(style='List Bullet').add_run(additional_comment)
+    ad_comment.bold = False
+    ad_comment.font.size = Pt(14)
 
     final_grade = grade(marks, weights)+ grade(individual_comment, comment_weight)
-    info_cells[3].paragraphs[0].add_run(str(final_grade))
+    finals = info_cells[3].paragraphs[0].add_run(str(final_grade))
+    finals.font.size = Pt(14)
+    finals.bold = True
+    finals.font.underline = True
 
     document.save(std_no+'.docx')
