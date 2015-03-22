@@ -61,7 +61,13 @@ def grade(marks, weights):
 
 """" Main function, process individual document"""
 
-def doc_process(marks, comment_statement, individual_comment, comment_weight, criteria, weights):
+def doc_process(parameters):
+    marks = parameters[0]
+    comment_statement = parameters[1]
+    individual_comment =parameters[2]
+    comment_weight = parameters[3]
+    criteria = parameters[4]
+    weights = parameters[5]
     additional_comment = individual_comment.pop()
 
     stat_matrix = order_file(criteria)
