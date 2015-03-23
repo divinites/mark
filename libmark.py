@@ -3,6 +3,7 @@ import csv
 from docx.shared import Pt
 from docx.shared import Emu
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from xlrd import open_workbook
 
 # Simply dealing with CSV
 def DetectDelimiter(csvFile):
@@ -25,6 +26,29 @@ def order_file(target_file):
     for i in target:
         target_matrix.append(i)
     return target_matrix
+
+# Dealing with Excel workbook
+def split_sheet(args):
+    wb = open_workbook(args)
+    mark_dict = {}
+    for sheet in wb.sheets():
+        if sheet.name == 'comment':
+            mark_dict['comment'] = sheet
+        if sheet.name == 'mark':
+            mark_dict['mark'] = sheet
+        if sheet.name == 'weight':
+            mark_dict['weight'] = sheet
+        if sheet.name == 'statement':
+            mark_dict['statement'] = sheet
+    return mark_dict
+
+# Dealing with Excel sheets
+def transfer_sheet(args):
+    args_matrix = []
+    for i in range(0,args.nrows):
+        args_matrix.append(args.row_values(i))
+    return args_matrix
+
 
 # Draw Tickers
 def signs(x):
@@ -62,15 +86,29 @@ def grade(marks, weights):
 """" Main function, process individual document"""
 
 def doc_process(parameters):
-    marks = parameters[0]
-    comment_statement = parameters[1]
-    individual_comment =parameters[2]
-    comment_weight = parameters[3]
-    criteria = parameters[4]
-    weights = parameters[5]
-    additional_comment = individual_comment.pop()
+    marks = parameters["mark"]
+    comment_statement = parameters["all_comment"]
+    individual_comment =parameters["comment"]
+    weights_matrix = parameters["weight"]
+    stat_matrix = parameters["statement"]
 
-    stat_matrix = order_file(criteria)
+    additional_comment = individual_comment.pop()
+    weights = []
+    comment_weight = []
+
+    for i in weights_matrix[0]:
+        try:
+            tmp = float(i)
+            weights.append(tmp)
+        except:
+            pass
+    for j in weights_matrix[1]:
+        try:
+            tmp = float(j)
+            comment_weight.append(tmp)
+        except:
+            pass
+
     individual_comment = [int(i) for i in individual_comment]
 
     pos_stats, neg_stats = zip(*stat_matrix)

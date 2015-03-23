@@ -2,25 +2,27 @@ from libmark import *
 import os
 os.system('rm -rf *.docx')
 
-statements = "./statement.csv"
-marks = "./ugmark.csv"
-comment = "./ugcomment.csv"
-weights = "./weights.csv"
-weights_matrix = order_file(weights)
 
+file = "./ugmarks.xlsx"
 
-weights = [float(i) for i in weights_matrix[0]]
+mark_dict = split_sheet(file)
 
-comment_weight = [float(j) for j in weights_matrix[1]]
+mark_matrix = transfer_sheet(mark_dict['mark'])
 
-mark_matrix = order_file(marks)
+weight_matrix = transfer_sheet(mark_dict['weight'])
+comment_matrix = transfer_sheet(mark_dict['comment'])
+statement_matrix = transfer_sheet(mark_dict['statement'])
+
 mark_matrix.pop(0)
-comments = order_file(comment)
-comment_statement = comments.pop(0)
+comment_statement = comment_matrix.pop(0)
 comment_statement.pop(0)
 comment_statement.pop()
 
-for individual_mark, individual_comment in zip(mark_matrix, comments):
+for individual_mark, individual_comment in zip(mark_matrix, comment_matrix):
     individual_comment.pop(0)
-    parameter = [individual_mark, comment_statement, individual_comment, comment_weight, statements, weights]
+    parameter = {"mark": individual_mark, "all_comment": comment_statement,
+                 "comment": individual_comment,
+                 "weight": weight_matrix, "statement": statement_matrix}
     doc_process(parameter)
+
+
