@@ -3,12 +3,14 @@ import os
 os.system('rm -rf *.docx')
 
 statements = "./statement.csv"
-marks = "./mark.csv"
-comment = "./ecomment.csv"
+marks = "./ugmark.csv"
+comment = "./ugcomment.csv"
 weights = "./weights.csv"
 weights_matrix = order_file(weights)
 
+
 weights = [float(i) for i in weights_matrix[0]]
+
 comment_weight = [float(j) for j in weights_matrix[1]]
 
 mark_matrix = order_file(marks)

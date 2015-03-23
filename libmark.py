@@ -155,31 +155,31 @@ def doc_process(parameters):
     title_cells = comments.columns[0].cells
     comments_cells = comments.columns[1].cells
     title_size = title_cells[0].paragraphs[0].add_run('Good Points:')
-    title_size.font.size = Pt(14)
+    title_size.font.size = Pt(10)
     title_size = title_cells[1].paragraphs[0].add_run('Potential Improvements:')
-    title_size.font.size = Pt(14)
+    title_size.font.size = Pt(10)
     title_size = title_cells[3].paragraphs[0].add_run('Additional Comments:')
-    title_size.font.size = Pt(14)
+    title_size.font.size = Pt(10)
 
     for idx, i in enumerate(individual_comment):
-        if i == 1:
+        if i == 5:
             ps_comment = comments_cells[0].add_paragraph(style='List Bullet').add_run(comment_statement[idx])
             ps_comment.bold = False
-            ps_comment.font.size =Pt(14)
+            ps_comment.font.size =Pt(10)
         if i == 0:
             ng_comment = comments_cells[1].add_paragraph(style='List Bullet').add_run(comment_statement[idx])
             ng_comment.bold = False
-            ng_comment.font.size = Pt(14)
-        if i == 2:
+            ng_comment.font.size = Pt(10)
+        if i == 6:
             bs_comment = comments_cells[0].add_paragraph(style='List Bullet').add_run(comment_statement[idx]+' (Bonus Point)')
             bs_comment.bold = False
-            bs_comment.font.size = Pt(14)
+            bs_comment.font.size = Pt(10)
         else:
             pass
 
     ad_comment = comments_cells[3].add_paragraph(style='List Bullet').add_run(additional_comment)
     ad_comment.bold = False
-    ad_comment.font.size = Pt(14)
+    ad_comment.font.size = Pt(10)
 
     final_grade = grade(marks, weights)+ grade(individual_comment, comment_weight)
     finals = info_cells[3].paragraphs[0].add_run(str(final_grade))
