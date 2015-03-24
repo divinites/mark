@@ -1,9 +1,18 @@
+#!/Users/divinites/anaconda/bin/python
 from libmark import *
 import os
+import sys
+from getopt import *
 os.system('rm -rf *.docx')
+try:
+    opts, args = getopt(sys.argv[1:], "f:", ["file="])
+except:
+    print("Now this program only have one possible parameter: -f or --file")
+    sys.exit(1)
 
-
-file = "./ugmarks.xlsx"
+for command, obj in opts:
+    if command in ("-f", "--file"):
+        file = obj
 
 mark_dict = split_sheet(file)
 

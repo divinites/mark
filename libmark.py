@@ -114,24 +114,27 @@ def doc_process(parameters):
     pos_stats, neg_stats = zip(*stat_matrix)
     document = Document()
     heads = document.add_paragraph()
-    cheads = heads.add_run('Economics of Strategy - ASSIGNMENT FEEDBACK FORM 2014/15')
+    cheads = heads.add_run('Economics of Corporate Strategy - ASSIGNMENT FEEDBACK FORM 2014/15')
     cheads.bold = True
     heads.alignment = WD_ALIGN_PARAGRAPH.CENTER
     cheads.font.name = 'Arial'
     cheads.font.size = Pt(14)
 
     intro = document.add_paragraph()
-    intro_c = []
-    intro_c.append(intro.add_run('This form is designed to provide you with specific feedback on your own coursework assignment.'))
-    intro_c.append(intro.add_run(' The scale below qualitatively presents an overview of the strengths and weaknesses of your work.'))
-    intro_c.append(intro.add_run(' Items are only ticked where applicable.'))
-    intro_c.append(intro.add_run(' Your tutor may provide additional comments overleaf.'))
+
+    intro_c = intro.add_run('This form is designed to provide you with specific '
+                            'feedback on your own coursework assignment. The scale '
+                            'below qualitatively presents an overview of the strengths'
+                            ' and weaknesses of your work. Items are only ticked where'
+                            ' applicable. Your tutor may provide additional comments overleaf.')
+
     std_no = marks.pop(0)
 
-    for i in intro_c:
-        i.font.name = 'Arial'
-        i.font.size = Pt(14)
-    intro_c[2].bold = True
+
+    intro_c.font.name = 'Arial'
+
+    intro_c.font.size = Pt(14)
+
     intro.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
     document.add_paragraph()
 
