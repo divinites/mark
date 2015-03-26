@@ -4,6 +4,7 @@ from docx.shared import Pt
 from docx.shared import Emu
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from xlrd import open_workbook
+import operator
 
 # Simply dealing with CSV
 def DetectDelimiter(csvFile):
@@ -42,13 +43,18 @@ def split_sheet(args):
             mark_dict['statement'] = sheet
     return mark_dict
 
+
 # Dealing with Excel sheets
 def transfer_sheet(args):
     args_matrix = []
-    for i in range(0,args.nrows):
+    for i in range(0, args.nrows):
         args_matrix.append(args.row_values(i))
     return args_matrix
 
+
+def sort_grade(args):
+    sorted_grade = sorted(args.items(), key=operator.itemgetter(1))
+    return sorted_grade
 
 # Draw Tickers
 def signs(x):
@@ -223,9 +229,12 @@ def doc_process(parameters):
     ad_comment.font.size = Pt(10)
 
     final_grade = grade(marks, weights)+ grade(individual_comment, comment_weight)
+    while (final_grade % 10 >8):
+        final_grade=final_grade+1
     finals = info_cells[3].paragraphs[0].add_run(str(final_grade))
     finals.font.size = Pt(14)
     finals.bold = True
     finals.font.underline = True
 
     document.save(std_no+'.docx')
+    return std_no, final_grade
