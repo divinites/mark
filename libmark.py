@@ -94,7 +94,7 @@ def grade(marks, weights):
 def doc_process(parameters):
     marks = parameters["mark"]
     comment_statement = parameters["all_comment"]
-    individual_comment =parameters["comment"]
+    individual_comment = parameters["comment"]
     weights_matrix = parameters["weight"]
     stat_matrix = parameters["statement"]
 
@@ -229,6 +229,7 @@ def doc_process(parameters):
     ad_comment.font.size = Pt(10)
 
     final_grade = grade(marks, weights)+ grade(individual_comment, comment_weight)
+
     while (final_grade % 10 >8):
         final_grade=final_grade+1
     finals = info_cells[3].paragraphs[0].add_run(str(final_grade))
