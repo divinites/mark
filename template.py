@@ -7,7 +7,10 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 class ECSFeedbackForm(docx.Document):
     def __init__(self, title=''):
         self.title = title
-
+        self.number = None
+        self.mark = None
+        self.comment = None
+        self.
     def add_title(self, title='', font='Arial', ptsize=14):
         self.title = title
         head = self.add_paragraph()
@@ -55,7 +58,7 @@ class ECSFeedbackForm(docx.Document):
         S1.bold = True
         S2.bold = True
         S3.bold = True
-        self.stdno = S1
+        self.number = S1
         self.mark = S3
 
     def add_form(self, statements,font='Arial', ptsize=10, style='Light Shading'):
