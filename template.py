@@ -6,13 +6,10 @@ from libmark import *
 title_font = FontFeature(10, "center", 'b')
 intro_font = FontFeature(10, "just", 'nb')
 
+
 class FeedbackForm:
     def __init__(self, file, stud_no):
 
-        """
-
-        :type stud_no: str
-        """
         self.docx = None
         self.title = None
         self.result = Result(file)
@@ -21,7 +18,6 @@ class FeedbackForm:
         exec(stud_no + "= Document()")
         exec("self.docx=DocWrapper(" + stud_no + ")")
         assert isinstance(self.docx, DocWrapper)
-
 
     def read_file(self, file):
         pass
@@ -135,10 +131,4 @@ class FeedbackForm:
             form_type == 'ecs'
             self.ug_form(path)
         else:
-            print("Now I only have ECS template ready...")
-
-
-
-
-
-
+            print("Error Type!")
