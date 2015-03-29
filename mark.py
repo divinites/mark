@@ -1,43 +1,38 @@
 #!/Users/divinites/anaconda/bin/python
-from template import *
 import os
-import sys
-from getopt import *
+from argparse import *
+
+from template import *
+from help import help_statement
+
 
 os.system('rm -rf *.docx')
-try:
-    opts, args = getopt(sys.argv[1:], "vai:s:o:t:", ["all", "input=", "output=", "student=", "type="])
-except:
-    print("Possible parameter: -a, -v, -i, -s, --all, --input=, --output, --student=, --type=")
-    sys.exit(1)
 
-path = './'
-marks = []
+parser = ArgumentParser(description=help_statement("usage"))
+parser.add_argument("-i", '--input', help=help_statement('-i'), dest='input', required=True)
+parser.add_argument("-o", '--output', default='./',
+                    help=help_statement('-o'), dest='output', required=False)
 
-for o, a in opts:
+exclusive_group = parser.add_mutually_exclusive_group()
+exclusive_group.add_argument("-a", "--all", help=help_statement('-a'),
+                             action='store_true', dest='all', required=False, default=False)
+exclusive_group.add_argument("-s", "--student", type=str,
+                             help=help_statement('-s'), dest='student_no', required=False)
+args = parser.parse_args()
+marks = Result(args.input)
+score = {}
+forms = {}
+for i in marks.student_list:
+    score[i] = marks.round(marks.grading(i))
+    forms[i] = FeedbackForm(args.input, i)
 
-    if o in ["-i", '--input']:
-        marks = Result(a)
-        form = FeedbackForm(a)
-        score = {}
-        for i in marks.student_list:
-            score[i] = marks.round(marks.grading(i))
+if not os.path.exists(args.output):
+    os.mkdir(args.output)
 
-    if o in ("-o", "--output"):
-        if not os.path.exists(a):
-            os.mkdir(a)
-            path = a
-    if o in ("-t", '--type'):
-        type = a
-    else:
-        type = 'ecs'
+if args.all is True:
+    for i, form in forms.items():
+        form.print_form(args.output)
+if args.student_no is not None:
+    forms[args.student_no].print_form(args.output)
 
-for o, a in opts:
-    if o in ("-s", "--student"):
-        std_no = a
-        form.print_form(std_no,path, type)
-
-    if o in ("--all", "a"):
-        for student in marks.student_list:
-            form.print_form(student, path, type)
 
