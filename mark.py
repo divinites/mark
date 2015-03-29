@@ -1,48 +1,43 @@
 #!/Users/divinites/anaconda/bin/python
-from libmark import *
+from template import *
 import os
 import sys
 from getopt import *
 
 os.system('rm -rf *.docx')
 try:
-    opts, args = getopt(sys.argv[1:], "f:", ["file="])
+    opts, args = getopt(sys.argv[1:], "vai:s:o:t:", ["all", "input=", "output=", "student=", "type="])
 except:
-    print("Now this program only have one possible parameter: -f or --file")
+    print("Possible parameter: -a, -v, -i, -s, --all, --input=, --output, --student=, --type=")
     sys.exit(1)
 
-for command, obj in opts:
-    if command in ("-f", "--file"):
-        file = obj
+path = './'
+marks = []
 
-mark_dict = split_sheet(file)
+for o, a in opts:
 
-mark_matrix = transfer_sheet(mark_dict['mark'])
+    if o in ["-i", '--input']:
+        marks = Result(a)
+        form = FeedbackForm(a)
+        score = {}
+        for i in marks.student_list:
+            score[i] = marks.round(marks.grading(i))
 
-weight_matrix = transfer_sheet(mark_dict['weight'])
-comment_matrix = transfer_sheet(mark_dict['comment'])
-statement_matrix = transfer_sheet(mark_dict['statement'])
+    if o in ("-o", "--output"):
+        if not os.path.exists(a):
+            os.mkdir(a)
+            path = a
+    if o in ("-t", '--type'):
+        type = a
+    else:
+        type = 'ecs'
 
-mark_matrix.pop(0)
-comment_statement = comment_matrix.pop(0)
-comment_statement.pop(0)
-comment_statement.pop()
-std_profile = {}
+for o, a in opts:
+    if o in ("-s", "--student"):
+        std_no = a
+        form.print_form(std_no,path, type)
 
-for individual_mark, individual_comment in zip(mark_matrix, comment_matrix):
-    individual_comment.pop(0)
-    parameter = {"mark": individual_mark, "all_comment": comment_statement,
-                 "comment": individual_comment,
-                 "weight": weight_matrix, "statement": statement_matrix}
-    std_no, final_grade = doc_process(parameter)
-    std_profile[std_no] = final_grade
-
-sorted_marks = sort_grade(std_profile)
-
-with open ('ranking.csv', 'w+') as ranking:
-    for i in sorted_marks:
-        number,grade = i
-        ranking.write(str(number)+','+str(grade)+'\n')
-
-
+    if o in ("--all", "a"):
+        for student in marks.student_list:
+            form.print_form(student, path, type)
 
