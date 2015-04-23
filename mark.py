@@ -6,8 +6,6 @@ import template.templates
 from helpstats import help_statement
 
 
-os.system('rm -rf *.docx')
-
 parser = ArgumentParser(description=help_statement("usage"))
 parser.add_argument("-i", '--input', help=help_statement('-i'), dest='input', required=True)
 parser.add_argument("-o", '--output', default='./',
@@ -26,7 +24,7 @@ forms = {}
 current_form =None
 
 if args.type is None:
-    current_form = template.templates.UGECSForm
+    current_form = template.templates.DefaultForm
 else:
     if args.type in template.templates.supported_forms.keys():
         current_form = template.templates.supported_forms[args.type]
