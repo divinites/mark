@@ -28,9 +28,8 @@ current_form =None
 if args.type is None:
     current_form = template.templates.UGECSForm
 else:
-    if args.type in template.templates.supported_form:
-        constructor = globals()[args.type]
-        current_form = constructor()
+    if args.type in template.templates.supported_forms.keys():
+        current_form = template.templates.supported_forms[args.type]
     else:
         raise(ValueError)
 
